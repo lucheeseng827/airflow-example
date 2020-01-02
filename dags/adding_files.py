@@ -31,8 +31,8 @@ t1 = BashOperator(
     dag=dag)
 
 t2 = BashOperator(
-    task_id='sleep',
-    bash_command='sleep 5',
+    task_id='create_file',
+    bash_command='touch date +"%T"',
     retries=3,
     dag=dag)
 
