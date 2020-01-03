@@ -1,7 +1,3 @@
-"""
-Code that goes along with the Airflow tutorial located at:
-https://github.com/apache/airflow/blob/master/airflow/example_dags/tutorial.py
-"""
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from datetime import datetime, timedelta
@@ -32,7 +28,7 @@ t1 = BashOperator(
 
 t2 = BashOperator(
     task_id='create_file',
-    bash_command='touch date +"%T"',
+    bash_command='touch date +"_%T_"+".txt"',
     retries=3,
     dag=dag)
 
@@ -53,33 +49,3 @@ t3 = BashOperator(
 t2.set_upstream(t1)
 t3.set_upstream(t1)
 #similarly t1 >> [t2,t3]
-
-
-#Guide from airflow documentation https://airflow.apache.org/docs/stable/tutorial.html#it-s-a-dag-definition-file
-"""
-t1.set_downstream(t2)
-
-# This means that t2 will depend on t1
-# running successfully to run.
-# It is equivalent to:
-t2.set_upstream(t1)
-
-# The bit shift operator can also be
-# used to chain operations:
-t1 >> t2
-
-# And the upstream dependency with the
-# bit shift operator:
-t2 << t1
-
-# Chaining multiple dependencies becomes
-# concise with the bit shift operator:
-t1 >> t2 >> t3
-
-# A list of tasks can also be set as
-# dependencies. These operations
-# all have the same effect:
-t1.set_downstream([t2, t3])
-t1 >> [t2, t3]
-[t2, t3] << t1
-"""
