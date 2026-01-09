@@ -1,2 +1,23 @@
 apache-airflow>=2.8.0
+
+# Cloud providers
 apache-airflow-providers-amazon>=8.0.0
+apache-airflow-providers-google>=10.0.0
+apache-airflow-providers-microsoft-azure>=8.0.0
+
+# Database providers
+apache-airflow-providers-postgres>=5.0.0
+apache-airflow-providers-mysql>=5.0.0
+apache-airflow-providers-mongo>=3.0.0
+apache-airflow-providers-redis>=3.0.0
+
+# Communication providers
+apache-airflow-providers-slack>=8.0.0
+apache-airflow-providers-email>=1.0.0
+
+# HTTP and API
+apache-airflow-providers-http>=4.0.0
+
+# Additional utilities
+pandas>=2.0.0
+requests>=2.31.0
