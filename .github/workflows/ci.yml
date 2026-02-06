@@ -38,7 +38,7 @@ jobs:
 
       - name: Validate DAG files
         run: |
-          python -c "from airflow.models import DagBag; dag_bag = DagBag(dag_folder='dags/', include_examples=False); assert len(dag_bag.import_errors) == 0, f'DAG import errors: {dag_bag.import_errors}'"
+          python scripts/validate_dags.py
 
       - name: Run tests
         run: |

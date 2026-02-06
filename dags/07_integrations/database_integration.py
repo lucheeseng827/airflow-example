@@ -126,21 +126,13 @@ def cache_in_redis(**context):
     mongo_data = ti.xcom_pull(task_ids="query_mongodb")
 
     if postgres_data is None or "records" not in postgres_data:
-        raise AirflowException(
-            f"Failed to retrieve postgres data from XCom. Got: {postgres_data}"
-        )
+        raise AirflowException(f"Failed to retrieve postgres data from XCom. Got: {postgres_data}")
     if mysql_data is None or "records" not in mysql_data:
-        raise AirflowException(
-            f"Failed to retrieve mysql data from XCom. Got: {mysql_data}"
-        )
+        raise AirflowException(f"Failed to retrieve mysql data from XCom. Got: {mysql_data}")
     if mongo_data is None or "records" not in mongo_data:
-        raise AirflowException(
-            f"Failed to retrieve mongodb data from XCom. Got: {mongo_data}"
-        )
+        raise AirflowException(f"Failed to retrieve mongodb data from XCom. Got: {mongo_data}")
 
-    total_records = (
-        postgres_data["records"] + mysql_data["records"] + mongo_data["records"]
-    )
+    total_records = postgres_data["records"] + mysql_data["records"] + mongo_data["records"]
 
     print("Caching results in Redis...")
     print(f"Key: pipeline:summary:{context['ds']}")
@@ -172,21 +164,13 @@ def insert_to_postgres(**context):
     mongo_data = ti.xcom_pull(task_ids="query_mongodb")
 
     if postgres_data is None or "records" not in postgres_data:
-        raise AirflowException(
-            f"Failed to retrieve postgres data from XCom. Got: {postgres_data}"
-        )
+        raise AirflowException(f"Failed to retrieve postgres data from XCom. Got: {postgres_data}")
     if mysql_data is None or "records" not in mysql_data:
-        raise AirflowException(
-            f"Failed to retrieve mysql data from XCom. Got: {mysql_data}"
-        )
+        raise AirflowException(f"Failed to retrieve mysql data from XCom. Got: {mysql_data}")
     if mongo_data is None or "records" not in mongo_data:
-        raise AirflowException(
-            f"Failed to retrieve mongodb data from XCom. Got: {mongo_data}"
-        )
+        raise AirflowException(f"Failed to retrieve mongodb data from XCom. Got: {mongo_data}")
 
-    total_records = (
-        postgres_data["records"] + mysql_data["records"] + mongo_data["records"]
-    )
+    total_records = postgres_data["records"] + mysql_data["records"] + mongo_data["records"]
 
     print("Inserting summary to PostgreSQL...")
     print(f"Table: summary")
