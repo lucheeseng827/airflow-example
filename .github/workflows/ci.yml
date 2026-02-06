@@ -41,5 +41,8 @@ jobs:
           python scripts/validate_dags.py
 
       - name: Run tests
+        env:
+          AIRFLOW__CORE__UNIT_TEST_MODE: "True"
+          AIRFLOW__CORE__LOAD_EXAMPLES: "False"
         run: |
           pytest test/ -v --cov=dags --cov-report=term-missing

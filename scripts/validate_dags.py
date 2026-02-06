@@ -27,7 +27,7 @@ def validate_dags():
             print(f"\nFile: {filename}")
             print(f"Error: {error}")
         print("=" * 60)
-        sys.exit(1)
+        return 1
 
     print(f"✓ Successfully loaded {len(dag_bag.dags)} DAGs")
     print(f"✓ No import errors detected")
