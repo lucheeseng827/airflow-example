@@ -124,9 +124,21 @@ def run_redshift_query(**context):
         sql='SELECT * FROM users WHERE created_at >= {{ ds }}',
         aws_conn_id='aws_default'
     )
+
+    Or use parameterized queries:
+    from airflow.providers.amazon.aws.hooks.redshift_sql import RedshiftSQLHook
+
+    redshift_hook = RedshiftSQLHook(redshift_conn_id='redshift_default')
+    redshift_hook.run(
+        sql='INSERT INTO fact_events SELECT * FROM staging_events WHERE event_date = %s',
+        parameters=[context['ds']]
+    )
     """
     execution_date = context["ds"]
 
+    # WARNING: This example uses string formatting for demonstration only.
+    # In production, ALWAYS use parameterized queries to prevent SQL injection.
+    # Example: cursor.execute(sql, (execution_date,))
     query = f"""
     INSERT INTO fact_events
     SELECT * FROM staging_events
@@ -135,6 +147,7 @@ def run_redshift_query(**context):
 
     print("Executing Redshift query...")
     print(f"Query: {query}")
+    print("⚠️  Note: In production, use parameterized queries!")
     print("✓ Redshift query executed successfully")
 
 
@@ -169,35 +182,30 @@ def deploy_sagemaker_model(**context):
 download_data = PythonOperator(
     task_id="download_from_s3",
     python_callable=download_from_s3,
-    provide_context=True,
     dag=dag,
 )
 
 process_with_lambda = PythonOperator(
     task_id="invoke_lambda",
     python_callable=invoke_lambda,
-    provide_context=True,
     dag=dag,
 )
 
 upload_results = PythonOperator(
     task_id="upload_to_s3",
     python_callable=upload_to_s3,
-    provide_context=True,
     dag=dag,
 )
 
 load_to_redshift = PythonOperator(
     task_id="load_to_redshift",
     python_callable=run_redshift_query,
-    provide_context=True,
     dag=dag,
 )
 
 deploy_model = PythonOperator(
     task_id="deploy_sagemaker_model",
     python_callable=deploy_sagemaker_model,
-    provide_context=True,
     dag=dag,
 )
 

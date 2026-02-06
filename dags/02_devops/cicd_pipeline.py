@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator, BranchPythonOperator
-from airflow.operators.dummy import DummyOperator
+from airflow.operators.empty import EmptyOperator
 
 default_args = {
     "owner": "devops-team",
@@ -89,7 +89,7 @@ def send_failure_notification():
 
 
 # Start task
-start = DummyOperator(task_id="start", dag=dag)
+start = EmptyOperator(task_id="start", dag=dag)
 
 # Run tests
 unit_tests = PythonOperator(
@@ -163,7 +163,7 @@ notify_failure = PythonOperator(
     dag=dag,
 )
 
-end = DummyOperator(task_id="end", dag=dag, trigger_rule="none_failed_min_one_success")
+end = EmptyOperator(task_id="end", dag=dag, trigger_rule="none_failed_min_one_success")
 
 # Define workflow
 start >> [unit_tests, lint_code, security_scan] >> check_tests

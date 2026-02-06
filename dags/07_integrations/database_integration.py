@@ -116,11 +116,27 @@ def cache_in_redis(**context):
         value=context['ds']
     )
     """
+    from airflow.exceptions import AirflowException
+
     ti = context["task_instance"]
 
+    # Validate XCom pulls
     postgres_data = ti.xcom_pull(task_ids="query_postgres")
     mysql_data = ti.xcom_pull(task_ids="query_mysql")
     mongo_data = ti.xcom_pull(task_ids="query_mongodb")
+
+    if postgres_data is None or "records" not in postgres_data:
+        raise AirflowException(
+            f"Failed to retrieve postgres data from XCom. Got: {postgres_data}"
+        )
+    if mysql_data is None or "records" not in mysql_data:
+        raise AirflowException(
+            f"Failed to retrieve mysql data from XCom. Got: {mysql_data}"
+        )
+    if mongo_data is None or "records" not in mongo_data:
+        raise AirflowException(
+            f"Failed to retrieve mongodb data from XCom. Got: {mongo_data}"
+        )
 
     total_records = (
         postgres_data["records"] + mysql_data["records"] + mongo_data["records"]
@@ -146,11 +162,27 @@ def insert_to_postgres(**context):
         parameters=[context['ds'], total_records]
     )
     """
+    from airflow.exceptions import AirflowException
+
     ti = context["task_instance"]
 
+    # Validate XCom pulls
     postgres_data = ti.xcom_pull(task_ids="query_postgres")
     mysql_data = ti.xcom_pull(task_ids="query_mysql")
     mongo_data = ti.xcom_pull(task_ids="query_mongodb")
+
+    if postgres_data is None or "records" not in postgres_data:
+        raise AirflowException(
+            f"Failed to retrieve postgres data from XCom. Got: {postgres_data}"
+        )
+    if mysql_data is None or "records" not in mysql_data:
+        raise AirflowException(
+            f"Failed to retrieve mysql data from XCom. Got: {mysql_data}"
+        )
+    if mongo_data is None or "records" not in mongo_data:
+        raise AirflowException(
+            f"Failed to retrieve mongodb data from XCom. Got: {mongo_data}"
+        )
 
     total_records = (
         postgres_data["records"] + mysql_data["records"] + mongo_data["records"]
@@ -167,21 +199,18 @@ def insert_to_postgres(**context):
 extract_postgres = PythonOperator(
     task_id="query_postgres",
     python_callable=query_postgres,
-    provide_context=True,
     dag=dag,
 )
 
 extract_mysql = PythonOperator(
     task_id="query_mysql",
     python_callable=query_mysql,
-    provide_context=True,
     dag=dag,
 )
 
 extract_mongo = PythonOperator(
     task_id="query_mongodb",
     python_callable=query_mongodb,
-    provide_context=True,
     dag=dag,
 )
 
@@ -189,14 +218,12 @@ extract_mongo = PythonOperator(
 cache_results = PythonOperator(
     task_id="cache_in_redis",
     python_callable=cache_in_redis,
-    provide_context=True,
     dag=dag,
 )
 
 insert_summary = PythonOperator(
     task_id="insert_summary",
     python_callable=insert_to_postgres,
-    provide_context=True,
     dag=dag,
 )
 

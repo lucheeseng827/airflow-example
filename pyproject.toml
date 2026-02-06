@@ -8,6 +8,21 @@ requires-python = ">=3.8"
 # Set the target Python version
 target-version = "py38"
 
+# Set line length
+line-length = 120
+
+# Exclude specific directories
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "*.egg-info",
+    ".pytest_cache",
+    ".ruff_cache",
+]
+
+[tool.ruff.lint]
 # Enable specific rule sets
 select = [
     "E",   # pycodestyle errors
@@ -43,20 +58,6 @@ ignore = [
     "ANN401", # Dynamically typed expressions (Any) are disallowed
     "PLR0913", # Too many arguments to function call
     "PLR2004", # Magic value used in comparison
-]
-
-# Set line length
-line-length = 120
-
-# Exclude specific directories
-exclude = [
-    ".git",
-    ".venv",
-    "venv",
-    "__pycache__",
-    "*.egg-info",
-    ".pytest_cache",
-    ".ruff_cache",
 ]
 
 [tool.ruff.format]
