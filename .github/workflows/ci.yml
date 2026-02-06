@@ -1,0 +1,49 @@
+name: Lint and Test
+
+on:
+  push:
+    branches: ["main", "master", "claude/**"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Check code formatting
+        run: |
+          echo "Checking code formatting with Ruff..."
+          ruff format --check dags/ test/
+
+      - name: Run linter
+        run: |
+          echo "Running Ruff linter..."
+          ruff check dags/ test/ --output-format=github
+
+      - name: Validate DAG files
+        run: |
+          echo "Validating all DAG files can be loaded..."
+          python scripts/validate_dags.py
+
+      - name: Run tests
+        env:
+          AIRFLOW__CORE__UNIT_TEST_MODE: "True"
+          AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+        run: |
+          echo "Running pytest with coverage..."
+          pytest test/ -v --cov=dags --cov-report=term-missing
